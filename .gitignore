@@ -1,0 +1,48 @@
+# Frontend (Next.js)
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.*
+frontend/.yarn/*
+!frontend/.yarn/patches
+!frontend/.yarn/plugins
+!frontend/.yarn/releases
+!frontend/.yarn/versions
+frontend/src/others/
+
+# Next.js build files
+frontend/.next/
+frontend/out/
+frontend/build
+frontend/.turbo/
+
+# Testing
+frontend/coverage
+
+# Production
+frontend/.vercel
+
+# TypeScript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Debug logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# Environment variables
+frontend/.env*
+frontend/.env
+
+# Ignore Go build files
+backend/bin/
+backend/.env
+
+# Ignore general OS files
+.DS_Store
+.idea/
+.vscode/
+
+
+
