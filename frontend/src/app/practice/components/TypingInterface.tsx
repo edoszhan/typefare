@@ -199,34 +199,33 @@ export default function TypingInterface({ timeSeconds, onFinish, onRestart, onTi
 
     if (e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault();
-      if (currentWord.userInput === currentWord.text) {
-        currentWord.isCompleted = true;
-        currentWord.isCorrect = true;
-        currentWord.isCurrent = false;
+      // Mark completion; correctness based on equality
+      currentWord.isCompleted = true;
+      currentWord.isCorrect = currentWord.userInput === currentWord.text;
+      currentWord.isCurrent = false;
 
-        // Ensure there is always a next word available (infinite stream)
-        if (currentWordIndex >= updatedWords.length - 2) {
-          const pool = getWordPool({ punctuation: toggles.punctuation, numbers: toggles.numbers });
-          const extra = generateWordsFromPool(10, pool).map((w) => ({
-            text: w,
-            isCurrent: false,
-            isCompleted: false,
-            isCorrect: false,
-            userInput: '',
-          }));
-          updatedWords.push(...extra);
-        }
-
-        updatedWords[currentWordIndex + 1].isCurrent = true;
-        setCurrentWordIndex(currentWordIndex + 1);
-        // Shift the visible window when a row completes
-        const nextIndex = currentWordIndex + 1;
-        const startOfNextRow = wordsVisibleStart + wordsPerLine;
-        if (nextIndex >= startOfNextRow) {
-          setWordsVisibleStart(startOfNextRow);
-        }
-        setWords(updatedWords);
+      // Ensure there is always a next word available (infinite stream)
+      if (currentWordIndex >= updatedWords.length - 2) {
+        const pool = getWordPool({ punctuation: toggles.punctuation, numbers: toggles.numbers });
+        const extra = generateWordsFromPool(10, pool).map((w) => ({
+          text: w,
+          isCurrent: false,
+          isCompleted: false,
+          isCorrect: false,
+          userInput: '',
+        }));
+        updatedWords.push(...extra);
       }
+
+      updatedWords[currentWordIndex + 1].isCurrent = true;
+      setCurrentWordIndex(currentWordIndex + 1);
+      // Shift the visible window when a row completes
+      const nextIndex = currentWordIndex + 1;
+      const startOfNextRow = wordsVisibleStart + wordsPerLine;
+      if (nextIndex >= startOfNextRow) {
+        setWordsVisibleStart(startOfNextRow);
+      }
+      setWords(updatedWords);
     }
   };
 

@@ -17,15 +17,42 @@ export default function WordDisplay({ words, currentWordIndex, visibleStart = 0,
         const index = visibleStart + i;
         const isCurrent = index === currentWordIndex;
         if (!isCurrent) {
+          // For completed incorrect words, render per-letter accuracy instead of full-word red
+          if (word.isCompleted && !word.isCorrect) {
+            const target = word.text;
+            const typed = word.userInput || '';
+            const renderLength = Math.max(target.length, typed.length);
+            return (
+              <span key={index} className="px-1 rounded">
+                {Array.from({ length: renderLength }).map((_, i) => {
+                  const targetCh = target[i];
+                  const typedCh = typed[i];
+                  const cls =
+                    typeof targetCh !== 'undefined'
+                      ? (typeof typedCh !== 'undefined'
+                          ? (typedCh === targetCh ? 'text-foreground' : 'text-destructive')
+                          : 'text-zinc-500')
+                      : (typeof typedCh !== 'undefined' ? 'text-destructive' : 'text-zinc-500');
+                  return (
+                    <span key={i} className={cls}>
+                      {typeof targetCh !== 'undefined' ? targetCh : typedCh || ''}
+                    </span>
+                  );
+                })}
+              </span>
+            );
+          }
+
+          // Default non-current rendering
           return (
             <span
               key={index}
               className={`px-1 rounded ${
                 word.isCompleted
                   ? word.isCorrect
-                    ? 'text-emerald-400'
+                    ? 'text-foreground'
                     : 'text-destructive'
-                  : 'text-muted-foreground'
+                  : 'text-zinc-500'
               }`}
             >
               {word.text}
@@ -33,14 +60,14 @@ export default function WordDisplay({ words, currentWordIndex, visibleStart = 0,
           );
         }
 
-        // Per-letter rendering for current word, show overflow typed characters
+        // Per-letter rendering for current word, show overflow typed characters (no background highlight)
         const target = word.text;
         const typed = word.userInput || '';
         const caretIndex = typed.length;
         const renderLength = Math.max(target.length, typed.length);
 
         return (
-          <span key={index} className="px-1 rounded bg-primary/20 text-foreground">
+          <span key={index} className="px-1 rounded text-foreground">
             {Array.from({ length: renderLength }).map((_, i) => {
               const targetCh = target[i];
               const typedCh = typed[i];
@@ -54,9 +81,9 @@ export default function WordDisplay({ words, currentWordIndex, visibleStart = 0,
                       ? // within target length: compare typed to target
                         (typeof typedCh !== 'undefined'
                           ? typedCh === targetCh
-                            ? 'text-emerald-400'
-                            : 'text-destructive'
-                          : 'text-muted-foreground')
+                            ? 'text-foreground' // swap: correct typed letters now white
+                            : 'text-destructive' // wrong letter red
+                          : 'text-zinc-500') // swap: not-yet-typed chars darker gray
                       : // overflow: show typed extra in red if exists
                         (typeof typedCh !== 'undefined' ? 'text-destructive' : 'text-muted-foreground')
                   }

@@ -80,8 +80,7 @@ export const formatTime = (seconds: number): string => {
 };
 
 // Estimate how many words we need for a given time duration
-export const estimateWordCount = (timeSeconds: number): number => {
-  // Assume average typing speed of 40 WPM for estimation
-  const estimatedWPM = 40;
-  return Math.ceil((estimatedWPM * timeSeconds) / 60);
-}; 
+export const estimateWordCount = (_timeSeconds: number): number => {
+  // Use a fixed initial word count regardless of duration
+  return 60; // 3 lines * 10 words/line + buffer
+};
