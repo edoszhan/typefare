@@ -1,15 +1,17 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { User, Trophy, MessageSquareText, Keyboard } from "lucide-react";
 import Image from "next/image";
 
 const Navbar = () => {
     const pathname = usePathname();
-    const isAuthenticated = false;
+    const { data: session } = useSession();
+    const isAuthenticated = !!session?.user;
 
     return (
-        <nav className="bg-[#0B0E13] text-white px-6 py-4 flex items-center justify-between">
+        <nav className="bg-background text-foreground px-6 py-4 flex items-center justify-between border-b border-border">
             {/* Left: Website Name and Logo*/}
             <Link href="/">
                 <Image src="/typefare-logo.jpg" alt="typefare" width={250} height={150} priority/>
@@ -24,8 +26,8 @@ const Navbar = () => {
             <NavItem href="/leaderboards" icon={<Trophy />} label="Leaderboards" pathname={pathname} />
             {/* <NavItem href="/discussion" icon={<MessageSquareText />} label="Discussion" pathname={pathname} /> */}
 
-            {/* Profile Link (Auth Handling Later) */}
-            <NavItem href={isAuthenticated ? "/dashboard" : "/auth"} icon={<User />} label="Profile" pathname={pathname} />
+            {/* Profile / Auth */}
+            <NavItem href={isAuthenticated ? "/dashboard" : "/auth"} icon={<User />} label={isAuthenticated ? (session?.user?.name || "Profile") : "Sign in"} pathname={pathname} />
             </div>
         </nav>
         );
@@ -38,7 +40,7 @@ export const NavItem = ({
   pathname,
 }: {
   href: string;
-  icon?: JSX.Element;
+  icon?: React.ReactNode;
   label: string;
   pathname: string;
 }) => {
